@@ -1,6 +1,7 @@
 # EcoAudit CLI - Módulo Principal
 # Autores: [Fran Bazán] & [José Miguel]
 
+from calculadora import estimar_consumo_wh, calcular_huella_co2
 
 while True:
     print("\n=========================================")
@@ -21,23 +22,37 @@ while True:
     
     if opcion == 1:
         print("\n[OPCIÓN 1] Iniciando proceso de auditoría...")
-        iter_str = input("Introduce iteraciones: ").strip()
-        iteraciones = int(iter_str)
+        proceso=input("Nombre del proceso o dispositivo: ").strip()
+        potencia=float(input("Introduce la potencia en W: ").strip())
+        horas=float(input("Introduce las horas de uso: ").strip())
+        iteraciones = int(input("Introduce el número de iteraciones: ").strip())
+        consumo= potencia * horas
+        huella= calcular_huella_co2(consumo)
         try:
-            num_iter = int(input("Introduce número de iteraciones: ").strip())
-            if num_iter <= 0:
+            if iteraciones <= 0:
                 print("⚠️ El valor debe ser mayor que cero.")
             else:
-                print(f"✔️ Configurado con éxito para {num_iter} iteraciones.")
+                print(f"✔️ Configurado con éxito para {iteraciones} iteraciones.")
+                with open("auditorias.csv", mode="a", encoding="utf-8") as archivo:
+                # Escribimos los datos separados por comas y terminamos con salto de línea (\n)
+                    archivo.write(f"{proceso},{potencia},{horas},{iteraciones},{consumo:.2f},{huella:.4f}\n")
+                    print("💾 Registro guardado con éxito en 'auditorias.csv'.")
         except ValueError:
                 print("⚠️ Error de formato: debe introducir un número entero.")
         
     elif opcion == 2:
-        print("\n[OPCIÓN 2] Consultando registros históricos...")
-    
+        try:
+            with open("auditorias.csv", mode="r", encoding="utf-8") as archivo:
+                print("Historial de auditorías:")
+                print(archivo.read())
+        except FileNotFoundError:
+           print("⚠️ No se encontró el archivo 'auditorias.csv'. Aún no se han realizado auditorías.")
+       
     elif opcion == 3:
         print("\nSaliendo de EcoAudit CLI. ¡Hasta pronto!")
         break
     
     else:
         print("⚠️ Opción no válida. Elija un número entre 1 y 3.")
+
+     
