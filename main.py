@@ -28,6 +28,18 @@ while True:
         iteraciones = int(input("Introduce el número de iteraciones: ").strip())
         consumo= potencia * horas
         huella= calcular_huella_co2(consumo)
+        consumo = potencia * horas
+       # SIMULACIÓN ITERATIVA PASO A PASO (PARA INSPECCIÓN EN DEPURADOR)
+        print("\nIniciando simulación ciclo a ciclo...")
+        consumo_ciclo = estimar_consumo_wh(potencia, horas, 1) # Consumo de un solo ciclo
+        consumo_acumulado = 0.0
+        ciclo = 1
+
+        while ciclo <= iteraciones:
+         consumo_acumulado = consumo_acumulado + consumo_ciclo # <--- PONDRÉIS AQUÍ EL PUNTO ROJO
+         print(f" [Ciclo {ciclo}] Consumo acumulado parcial: {consumo_acumulado:.2f} Wh")
+         ciclo = ciclo + 1
+      
         try:
             if iteraciones <= 0:
                 print("⚠️ El valor debe ser mayor que cero.")
